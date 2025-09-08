@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,18 +17,24 @@ export function QuestionModal() {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
 
+  useEffect(() => {
+    if (currentQuestion) {
+      setSelectedAnswer(null);
+      setShowResult(false);
+    }
+  }, [currentQuestion]);
+
   if (!currentQuestion) return null;
 
   const handleAnswerSelect = (answerIndex: number) => {
+    if (showResult) return;
+
     setSelectedAnswer(answerIndex);
     setShowResult(true);
 
     const isCorrect = answerIndex === currentQuestion.correctAnswer;
-    setTimeout(() => {
-      answerQuestion(isCorrect);
-      setSelectedAnswer(null);
-      setShowResult(false);
-    }, 2000);
+
+    answerQuestion(isCorrect);
   };
 
   const handleClose = () => {
@@ -47,7 +53,7 @@ export function QuestionModal() {
         <Card className="overflow-hidden border-0 bg-card p-0">
           <CardHeader className="-m-px relative bg-primary py-4 text-primary-foreground sm:py-6">
             <CardTitle className="text-left font-bold text-xl sm:text-center sm:text-2xl md:text-3xl">
-              ${currentQuestion.value}
+              <p>${currentQuestion.value}</p>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 p-4 sm:space-y-6 sm:p-8">
@@ -80,39 +86,25 @@ export function QuestionModal() {
 
             {showResult && (
               <div className="fade-in-50 animate-in space-y-4 duration-300">
-                <div className="mb-4 text-center">
-                  {selectedAnswer === currentQuestion.correctAnswer ? (
-                    <div className="rounded-lg border-2 border-green-500 bg-green-100 p-3 sm:p-4">
-                      <p className="font-bold text-green-700 text-lg sm:text-xl">
-                        ✓ Correct! +${currentQuestion.value}
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="rounded-lg border-2 border-red-500 bg-red-100 p-3 sm:p-4">
-                      <p className="font-bold text-lg text-red-700 sm:text-xl">
-                        ✗ Incorrect! +$0
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {currentQuestion.options.map((option, index) => (
-                    <div
+                    <Button
                       key={option}
-                      className={`rounded-lg border-2 p-3 ${
+                      variant="outline"
+                      disabled={true}
+                      className={`h-auto w-full justify-start border-2 p-3 text-left sm:p-4 ${
                         index === currentQuestion.correctAnswer
-                          ? "border-green-500 bg-green-100 text-green-800"
+                          ? "border-green-400 bg-green-50 text-base text-green-500 hover:bg-green-50 sm:text-lg"
                           : index === selectedAnswer
-                            ? "border-red-500 bg-red-100 text-red-800"
-                            : "border-muted-foreground/20 bg-muted"
+                            ? "border-red-400 bg-red-50 text-base text-red-500 hover:bg-red-50 sm:text-lg"
+                            : "border-muted-foreground/20 bg-muted font-normal text-muted-foreground text-sm hover:bg-muted sm:text-base"
                       }`}
                     >
-                      <span className="mr-3 font-semibold">
+                      <span className="mr-2 font-semibold sm:mr-3 sm:text-xl">
                         {String.fromCharCode(65 + index)}.
                       </span>
                       {option}
-                    </div>
+                    </Button>
                   ))}
                 </div>
               </div>

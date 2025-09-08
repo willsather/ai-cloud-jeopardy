@@ -151,9 +151,7 @@
 }
 
 .light,
-.light-theme,
-.invert-theme {
-  /* Light theme colors (now as override) */
+.light-theme {
   --ds-background-100: oklch(1 0 0);
   --ds-background-200: oklch(0.984 0 0);
 
@@ -215,6 +213,7 @@
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);

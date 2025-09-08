@@ -1,9 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-import { NameEntry } from "@/components/name-entry";
+import { GameOverModal } from "@/components/game-over-modal";
 import { QuestionModal } from "@/components/question-modal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -11,12 +10,10 @@ import questionsData from "@/data/questions.json";
 import { useGameStore } from "@/lib/game-state";
 
 export default function Home() {
-  const router = useRouter();
+  const [gameOverModalOpen, setGameOverModalOpen] = useState(false);
   const {
-    playerName,
     score,
     gameData,
-    gameStarted,
     gameCompleted,
     answeredQuestions,
     correctAnswers,
@@ -33,13 +30,9 @@ export default function Home() {
 
   useEffect(() => {
     if (gameCompleted) {
-      router.push("/game-over");
+      setGameOverModalOpen(true);
     }
-  }, [gameCompleted, router]);
-
-  if (!gameStarted || !playerName) {
-    return <NameEntry />;
-  }
+  }, [gameCompleted]);
 
   if (!gameData) {
     return (
@@ -63,6 +56,25 @@ export default function Home() {
       return "✗";
     }
     return "✓"; // fallback
+  };
+
+  const getQuestionStyling = (
+    categoryIndex: number,
+    questionIndex: number,
+    answered: boolean,
+  ) => {
+    if (!answered) {
+      return "border-primary/30 bg-card text-foreground shadow-md hover:scale-105 hover:border-primary hover:bg-primary/20 hover:text-foreground hover:shadow-lg";
+    }
+
+    const questionKey = `${categoryIndex}-${questionIndex}`;
+    if (correctAnswers.has(questionKey)) {
+      return "cursor-not-allowed border-green-400 bg-green-50 text-green-500 shadow-sm";
+    } else if (incorrectAnswers.has(questionKey)) {
+      return "cursor-not-allowed border-red-400 bg-red-50 text-red-500 shadow-sm";
+    }
+
+    return "cursor-not-allowed border-muted bg-muted text-muted-foreground opacity-50";
   };
 
   return (
@@ -96,12 +108,6 @@ export default function Home() {
             </h1>
             <p className="text-muted-foreground">
               powered by <span className="text-foreground">▲</span>
-            </p>
-          </div>
-
-          <div className="text-left sm:text-right">
-            <p className="mt-4 font-semibold text-base text-foreground sm:text-lg md:mt-8">
-              Player: {playerName}
             </p>
           </div>
         </div>
@@ -138,11 +144,7 @@ export default function Home() {
                     <Button
                       key={`${j}-${i}`}
                       variant="outline"
-                      className={`h-24 border-2 font-bold text-2xl transition-all duration-200 ${
-                        answered
-                          ? "cursor-not-allowed border-muted bg-muted text-muted-foreground opacity-50"
-                          : "border-primary/30 bg-card text-foreground shadow-md hover:scale-105 hover:border-primary hover:bg-primary/20 hover:text-foreground hover:shadow-lg"
-                      } `}
+                      className={`h-24 border-2 font-bold text-2xl transition-all duration-200 ${getQuestionStyling(j, i, answered)}`}
                       onClick={() => !answered && selectQuestion(j, i)}
                       disabled={answered}
                     >
@@ -157,6 +159,12 @@ export default function Home() {
 
         {/* Question Modal */}
         {currentQuestion && <QuestionModal />}
+
+        {/* Game Over Modal */}
+        <GameOverModal
+          open={gameOverModalOpen}
+          onOpenChange={setGameOverModalOpen}
+        />
       </div>
     </div>
   );

@@ -19,7 +19,6 @@ export interface GameData {
 }
 
 export interface GameState {
-  playerName: string;
   score: number;
   currentQuestion: Question | null;
   gameData: GameData | null;
@@ -29,8 +28,6 @@ export interface GameState {
   correctAnswers: Set<string>;
   incorrectAnswers: Set<string>;
 
-  // Actions
-  setPlayerName: (name: string) => void;
   setGameData: (data: GameData) => void;
   startGame: () => void;
   selectQuestion: (categoryIndex: number, questionIndex: number) => void;
@@ -42,17 +39,14 @@ export interface GameState {
 export const useGameStore = create<GameState>()(
   persist(
     (set, get) => ({
-      playerName: "",
       score: 0,
       currentQuestion: null,
       gameData: null,
-      gameStarted: false,
+      gameStarted: true,
       gameCompleted: false,
       answeredQuestions: new Set(),
       correctAnswers: new Set(),
       incorrectAnswers: new Set(),
-
-      setPlayerName: (name: string) => set({ playerName: name }),
 
       setGameData: (data: GameData) => set({ gameData: data }),
 
@@ -112,7 +106,6 @@ export const useGameStore = create<GameState>()(
           correctAnswers: newCorrectAnswers,
           incorrectAnswers: newIncorrectAnswers,
           gameCompleted,
-          currentQuestion: null,
         });
 
         // Game completion handled by parent component
@@ -125,10 +118,9 @@ export const useGameStore = create<GameState>()(
         sessionStorage.removeItem("jeopardy-game-storage");
 
         set({
-          playerName: "",
           score: 0,
           currentQuestion: null,
-          gameStarted: false,
+          gameStarted: true,
           gameCompleted: false,
           answeredQuestions: new Set(),
           correctAnswers: new Set(),
@@ -148,13 +140,19 @@ export const useGameStore = create<GameState>()(
             // Convert arrays back to Sets when loading from storage
             if (parsed.state) {
               parsed.state.answeredQuestions = new Set(
-                Array.isArray(parsed.state.answeredQuestions) ? parsed.state.answeredQuestions : [],
+                Array.isArray(parsed.state.answeredQuestions)
+                  ? parsed.state.answeredQuestions
+                  : [],
               );
               parsed.state.correctAnswers = new Set(
-                Array.isArray(parsed.state.correctAnswers) ? parsed.state.correctAnswers : [],
+                Array.isArray(parsed.state.correctAnswers)
+                  ? parsed.state.correctAnswers
+                  : [],
               );
               parsed.state.incorrectAnswers = new Set(
-                Array.isArray(parsed.state.incorrectAnswers) ? parsed.state.incorrectAnswers : [],
+                Array.isArray(parsed.state.incorrectAnswers)
+                  ? parsed.state.incorrectAnswers
+                  : [],
               );
             }
 
