@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
-import { GameOverModal } from "@/components/game-over-modal";
+import { GameOverContent } from "@/components/game-over-content";
 import { QuestionModal } from "@/components/question-modal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -10,7 +10,6 @@ import questionsData from "@/data/questions.json";
 import { useGameStore } from "@/lib/game-state";
 
 export default function Home() {
-  const [gameOverModalOpen, setGameOverModalOpen] = useState(false);
   const {
     score,
     gameData,
@@ -27,12 +26,6 @@ export default function Home() {
   useEffect(() => {
     setGameData(questionsData);
   }, [setGameData]);
-
-  useEffect(() => {
-    if (gameCompleted) {
-      setGameOverModalOpen(true);
-    }
-  }, [gameCompleted]);
 
   if (!gameData) {
     return (
@@ -112,59 +105,63 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Game Board */}
-        <Card className="border-2 border-primary/20 shadow-xl">
-          <CardHeader className="flex h-12 items-center justify-center">
-            <p className="font-bold text-2xl text-primary sm:text-3xl">
-              ${score}
-            </p>
-          </CardHeader>
+        {/* Game Board or Game Over Content */}
+        {gameCompleted ? (
+          <Card className="border-2 border-primary/20 p-0 shadow-xl">
+            <CardContent className="p-6">
+              <GameOverContent />
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="border-2 border-primary/20 shadow-xl">
+            <CardHeader className="flex h-12 items-center justify-center">
+              <p className="font-bold text-2xl text-primary sm:text-3xl">
+                ${score}
+              </p>
+            </CardHeader>
 
-          <CardContent className="p-6">
-            <div className="grid grid-cols-3 gap-4">
-              {/* Category Headers */}
-              {gameData.categories.map((category) => (
-                <div
-                  key={category.name}
-                  className="flex items-center justify-center rounded-lg bg-primary p-4 text-primary-foreground"
-                >
-                  <h2 className="text-center font-bold text-sm uppercase leading-tight tracking-wide sm:text-lg md:text-xl">
-                    {category.name}
-                  </h2>
-                </div>
-              ))}
+            <CardContent className="p-6">
+              <div className="grid grid-cols-3 gap-4">
+                {/* Category Headers */}
+                {gameData.categories.map((category) => (
+                  <div
+                    key={category.name}
+                    className="flex items-center justify-center rounded-lg bg-primary p-4 text-primary-foreground"
+                  >
+                    <h2 className="text-center font-bold text-sm uppercase leading-tight tracking-wide sm:text-lg md:text-xl">
+                      {category.name}
+                    </h2>
+                  </div>
+                ))}
 
-              {/* Question Cells */}
-              {[0, 1, 2].map((i) =>
-                gameData.categories.map((category, j) => {
-                  const question = category.questions[i];
-                  const answered = isQuestionAnswered(j, i);
+                {/* Question Cells */}
+                {[0, 1, 2].map((i) =>
+                  gameData.categories.map((category, j) => {
+                    const question = category.questions[i];
+                    const answered = isQuestionAnswered(j, i);
 
-                  return (
-                    <Button
-                      key={`${j}-${i}`}
-                      variant="outline"
-                      className={`h-24 border-2 font-bold text-2xl transition-all duration-200 ${getQuestionStyling(j, i, answered)}`}
-                      onClick={() => !answered && selectQuestion(j, i)}
-                      disabled={answered}
-                    >
-                      {answered ? getQuestionIcon(j, i) : `$${question.value}`}
-                    </Button>
-                  );
-                }),
-              )}
-            </div>
-          </CardContent>
-        </Card>
+                    return (
+                      <Button
+                        key={`${j}-${i}`}
+                        variant="outline"
+                        className={`h-24 border-2 font-bold text-2xl transition-all duration-200 ${getQuestionStyling(j, i, answered)}`}
+                        onClick={() => !answered && selectQuestion(j, i)}
+                        disabled={answered}
+                      >
+                        {answered
+                          ? getQuestionIcon(j, i)
+                          : `$${question.value}`}
+                      </Button>
+                    );
+                  }),
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Question Modal */}
         {currentQuestion && <QuestionModal />}
-
-        {/* Game Over Modal */}
-        <GameOverModal
-          open={gameOverModalOpen}
-          onOpenChange={setGameOverModalOpen}
-        />
       </div>
     </div>
   );

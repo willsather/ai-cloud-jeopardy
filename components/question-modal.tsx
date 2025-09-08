@@ -17,12 +17,28 @@ export function QuestionModal() {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
 
+  const handleClose = () => {
+    closeQuestion();
+    setSelectedAnswer(null);
+    setShowResult(false);
+  };
+
   useEffect(() => {
     if (currentQuestion) {
       setSelectedAnswer(null);
       setShowResult(false);
     }
   }, [currentQuestion]);
+
+  useEffect(() => {
+    if (showResult) {
+      const timer = setTimeout(() => {
+        handleClose();
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [showResult, handleClose]);
 
   if (!currentQuestion) return null;
 
@@ -35,12 +51,6 @@ export function QuestionModal() {
     const isCorrect = answerIndex === currentQuestion.correctAnswer;
 
     answerQuestion(isCorrect);
-  };
-
-  const handleClose = () => {
-    closeQuestion();
-    setSelectedAnswer(null);
-    setShowResult(false);
   };
 
   return (
