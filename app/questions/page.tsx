@@ -81,8 +81,9 @@ export default function QuestionsPage() {
                 powered by <span className="text-foreground">▲</span>
               </p>
             </div>
+
             <div className="text-left sm:text-right">
-              <p className="font-semibold text-base text-foreground sm:text-lg">
+              <p className="font-semibold text-base text-foreground sm:text-lg mt-4 md:mt-8">
                 Player: {playerName}
               </p>
             </div>
