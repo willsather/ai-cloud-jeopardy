@@ -9,8 +9,18 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "AI Cloud Jeopardy",
   description: "Learn more about Vercel's AI Cloud",
-  icons: [{ rel: "icon", url: "/favicon.svg", type: "image/svg+xml" }],
-};
+  icons: {
+    icon: `/favicon.ico`,
+    shortcut: `/favicon.ico`,
+    apple: [
+      { url: `/57x57.png`, sizes: '57x57' },
+      { url: `/120x120.png`, sizes: '120x120' },
+      { url: `/180x180.png`, sizes: '180x180' },
+    ],
+    other: [
+      { rel: 'mask-icon', url: `/safari-pinned-tab.svg` },
+    ],
+  },};
 
 export default function RootLayout({
   children,
