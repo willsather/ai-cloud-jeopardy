@@ -58,7 +58,6 @@ export const useGameStore = create<GameState>()(
 
       startGame: () => {
         set({ gameStarted: true });
-        window.location.href = "/questions";
       },
 
       selectQuestion: (categoryIndex: number, questionIndex: number) => {
@@ -116,9 +115,7 @@ export const useGameStore = create<GameState>()(
           currentQuestion: null,
         });
 
-        if (gameCompleted) {
-          window.location.href = "/game-over";
-        }
+        // Game completion handled by parent component
       },
 
       closeQuestion: () => set({ currentQuestion: null }),
@@ -137,9 +134,6 @@ export const useGameStore = create<GameState>()(
           correctAnswers: new Set(),
           incorrectAnswers: new Set(),
         });
-
-        // Redirect to home page
-        window.location.href = "/";
       },
     }),
     {
