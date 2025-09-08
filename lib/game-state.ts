@@ -1,41 +1,41 @@
-import { create } from "zustand"
-import { persist } from "zustand/middleware"
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 export interface Question {
-  value: number
-  question: string
-  answer: string
-  answered?: boolean
+  value: number;
+  question: string;
+  answer: string;
+  answered?: boolean;
 }
 
 export interface Category {
-  name: string
-  questions: Question[]
+  name: string;
+  questions: Question[];
 }
 
 export interface GameData {
-  categories: Category[]
+  categories: Category[];
 }
 
 export interface GameState {
-  playerName: string
-  score: number
-  currentQuestion: Question | null
-  gameData: GameData | null
-  gameStarted: boolean
-  gameCompleted: boolean
-  answeredQuestions: Set<string>
-  correctAnswers: Set<string>
-  incorrectAnswers: Set<string>
+  playerName: string;
+  score: number;
+  currentQuestion: Question | null;
+  gameData: GameData | null;
+  gameStarted: boolean;
+  gameCompleted: boolean;
+  answeredQuestions: Set<string>;
+  correctAnswers: Set<string>;
+  incorrectAnswers: Set<string>;
 
   // Actions
-  setPlayerName: (name: string) => void
-  setGameData: (data: GameData) => void
-  startGame: () => void
-  selectQuestion: (categoryIndex: number, questionIndex: number) => void
-  answerQuestion: (correct: boolean) => void
-  closeQuestion: () => void
-  resetGame: () => void
+  setPlayerName: (name: string) => void;
+  setGameData: (data: GameData) => void;
+  startGame: () => void;
+  selectQuestion: (categoryIndex: number, questionIndex: number) => void;
+  answerQuestion: (correct: boolean) => void;
+  closeQuestion: () => void;
+  resetGame: () => void;
 }
 
 export const useGameStore = create<GameState>()(
@@ -56,47 +56,55 @@ export const useGameStore = create<GameState>()(
       setGameData: (data: GameData) => set({ gameData: data }),
 
       startGame: () => {
-        set({ gameStarted: true })
-        window.location.href = "/questions"
+        set({ gameStarted: true });
+        window.location.href = "/questions";
       },
 
       selectQuestion: (categoryIndex: number, questionIndex: number) => {
-        const { gameData } = get()
-        if (!gameData) return
+        const { gameData } = get();
+        if (!gameData) return;
 
-        const question = gameData.categories[categoryIndex].questions[questionIndex]
-        const questionKey = `${categoryIndex}-${questionIndex}`
+        const question =
+          gameData.categories[categoryIndex].questions[questionIndex];
+        const questionKey = `${categoryIndex}-${questionIndex}`;
 
-        if (get().answeredQuestions.has(questionKey)) return
+        if (get().answeredQuestions.has(questionKey)) return;
 
-        set({ currentQuestion: question })
+        set({ currentQuestion: question });
       },
 
       answerQuestion: (correct: boolean) => {
-        const { currentQuestion, score, answeredQuestions, gameData, correctAnswers, incorrectAnswers } = get()
-        if (!currentQuestion || !gameData) return
+        const {
+          currentQuestion,
+          score,
+          answeredQuestions,
+          gameData,
+          correctAnswers,
+          incorrectAnswers,
+        } = get();
+        if (!currentQuestion || !gameData) return;
 
-        const newScore = correct ? score + currentQuestion.value : score
+        const newScore = correct ? score + currentQuestion.value : score;
         const questionKey = `${gameData.categories.findIndex((cat) =>
           cat.questions.some((q) => q === currentQuestion),
         )}-${gameData.categories
           .find((cat) => cat.questions.some((q) => q === currentQuestion))
-          ?.questions.findIndex((q) => q === currentQuestion)}`
+          ?.questions.findIndex((q) => q === currentQuestion)}`;
 
-        const newAnsweredQuestions = new Set(answeredQuestions)
-        newAnsweredQuestions.add(questionKey)
+        const newAnsweredQuestions = new Set(answeredQuestions);
+        newAnsweredQuestions.add(questionKey);
 
-        const newCorrectAnswers = new Set(correctAnswers)
-        const newIncorrectAnswers = new Set(incorrectAnswers)
+        const newCorrectAnswers = new Set(correctAnswers);
+        const newIncorrectAnswers = new Set(incorrectAnswers);
 
         if (correct) {
-          newCorrectAnswers.add(questionKey)
+          newCorrectAnswers.add(questionKey);
         } else {
-          newIncorrectAnswers.add(questionKey)
+          newIncorrectAnswers.add(questionKey);
         }
 
         // Check if game is completed (all 9 questions answered)
-        const gameCompleted = newAnsweredQuestions.size === 9
+        const gameCompleted = newAnsweredQuestions.size === 9;
 
         set({
           score: newScore,
@@ -105,10 +113,10 @@ export const useGameStore = create<GameState>()(
           incorrectAnswers: newIncorrectAnswers,
           gameCompleted,
           currentQuestion: null,
-        })
+        });
 
         if (gameCompleted) {
-          window.location.href = "/game-over"
+          window.location.href = "/game-over";
         }
       },
 
@@ -116,7 +124,7 @@ export const useGameStore = create<GameState>()(
 
       resetGame: () => {
         // Clear session storage
-        sessionStorage.removeItem("jeopardy-game-storage")
+        sessionStorage.removeItem("jeopardy-game-storage");
 
         set({
           playerName: "",
@@ -127,54 +135,66 @@ export const useGameStore = create<GameState>()(
           answeredQuestions: new Set(),
           correctAnswers: new Set(),
           incorrectAnswers: new Set(),
-        })
+        });
 
         // Redirect to home page
-        window.location.href = "/"
+        window.location.href = "/";
       },
     }),
     {
       name: "jeopardy-game-storage",
       storage: {
         getItem: (name) => {
-          const str = sessionStorage.getItem(name)
-          if (!str) return null
+          const str = sessionStorage.getItem(name);
+          if (!str) return null;
 
           try {
-            const parsed = JSON.parse(str)
+            const parsed = JSON.parse(str);
             // Convert arrays back to Sets when loading from storage
             if (parsed.state) {
-              parsed.state.answeredQuestions = new Set(parsed.state.answeredQuestions || [])
-              parsed.state.correctAnswers = new Set(parsed.state.correctAnswers || [])
-              parsed.state.incorrectAnswers = new Set(parsed.state.incorrectAnswers || [])
+              parsed.state.answeredQuestions = new Set(
+                parsed.state.answeredQuestions || [],
+              );
+              parsed.state.correctAnswers = new Set(
+                parsed.state.correctAnswers || [],
+              );
+              parsed.state.incorrectAnswers = new Set(
+                parsed.state.incorrectAnswers || [],
+              );
             }
 
-            return parsed
+            return parsed;
           } catch {
-            return null
+            return null;
           }
         },
         setItem: (name, value) => {
           try {
-            const stateToSave = { ...value }
+            const stateToSave = { ...value };
 
             // Convert Sets to arrays for storage
             if (stateToSave.state) {
               stateToSave.state = {
                 ...stateToSave.state,
-                answeredQuestions: Array.from(stateToSave.state.answeredQuestions || []),
-                correctAnswers: Array.from(stateToSave.state.correctAnswers || []),
-                incorrectAnswers: Array.from(stateToSave.state.incorrectAnswers || []),
-              }
+                answeredQuestions: Array.from(
+                  stateToSave.state.answeredQuestions || [],
+                ),
+                correctAnswers: Array.from(
+                  stateToSave.state.correctAnswers || [],
+                ),
+                incorrectAnswers: Array.from(
+                  stateToSave.state.incorrectAnswers || [],
+                ),
+              };
             }
 
-            sessionStorage.setItem(name, JSON.stringify(stateToSave))
+            sessionStorage.setItem(name, JSON.stringify(stateToSave));
           } catch (error) {
-            console.error("Failed to save game state:", error)
+            console.error("Failed to save game state:", error);
           }
         },
         removeItem: (name) => sessionStorage.removeItem(name),
       },
     },
   ),
-)
+);

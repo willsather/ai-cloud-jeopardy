@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import { useEffect } from "react"
-import { useGameStore } from "@/lib/game-state"
-import { NameEntry } from "@/components/name-entry"
-import questionsData from "@/data/questions.json"
+import { useEffect } from "react";
+
+import { NameEntry } from "@/components/name-entry";
+import questionsData from "@/data/questions.json";
+import { useGameStore } from "@/lib/game-state";
 
 export default function Home() {
-  const { setGameData } = useGameStore()
+  const { setGameData } = useGameStore();
 
   useEffect(() => {
-    // Load game data on component mount
-    setGameData(questionsData)
-  }, [setGameData])
+    setGameData(questionsData);
+  }, [setGameData]);
 
-  return <NameEntry />
+  return <NameEntry />;
 }

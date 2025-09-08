@@ -3,7 +3,6 @@
     {
       "name": "Vercel",
       "questions": [
-        
         {
           "value": 100,
           "question": "This React framework, maintained by Vercel, features server-side rendering and static site generation out of the box.",
@@ -53,19 +52,34 @@
         {
           "value": 100,
           "question": "This type of computing model allows AI applications to scale automatically based on demand without managing servers.",
-          "options": ["Serverless Computing", "Container Computing", "Virtual Machines", "Bare Metal"],
+          "options": [
+            "Serverless Computing",
+            "Container Computing",
+            "Virtual Machines",
+            "Bare Metal"
+          ],
           "correctAnswer": 0
         },
         {
           "value": 200,
           "question": "This Vercel innovation charges only for CPU time your code actually executes—making AI workloads far more cost-efficient.",
-          "options": ["Cold Start Pricing", "Flexible Compute", "Active CPU", "Reserved Instances"],
+          "options": [
+            "Cold Start Pricing",
+            "Flexible Compute",
+            "Active CPU",
+            "Reserved Instances"
+          ],
           "correctAnswer": 2
         },
         {
           "value": 300,
           "question": "This Vercel feature allows safe execution of untrusted code, useful for running agent-generated scripts securely.",
-          "options": ["Edge Cache", "Sandbox", "Edge Runtime", "Function Proxy"],
+          "options": [
+            "Edge Cache",
+            "Sandbox",
+            "Edge Runtime",
+            "Function Proxy"
+          ],
           "correctAnswer": 1
         }
       ]
