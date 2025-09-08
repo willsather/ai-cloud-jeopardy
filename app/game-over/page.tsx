@@ -12,34 +12,14 @@ import { useGameStore } from "@/lib/game-state";
 export default function GameOverPage() {
   const { playerName, score } = useGameStore();
 
-  const getScoreMessage = (score: number) => {
-    if (score >= 1800)
-      return {
-        message: "Outstanding! You're a true tech expert!",
-        color: "bg-green-600",
-      };
-    if (score >= 1200)
-      return {
-        message: "Great job! You know your stuff!",
-        color: "bg-primary",
-      };
-    if (score >= 600)
-      return { message: "Good work! Keep learning!", color: "bg-accent" };
-    return {
-      message: "Nice try! There's always room to grow!",
-      color: "bg-secondary",
-    };
-  };
-
-  const _scoreInfo = getScoreMessage(score);
-  const maxPossibleScore = 1800; // 3 categories × 3 questions × (100+200+300)
+  const maxPossibleScore = 1800;
   const percentage = Math.round((score / maxPossibleScore) * 100);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-accent/10 p-4">
       <div className="mx-auto max-w-4xl space-y-8 py-8">
         {/* Header */}
-        <div className="space-y-4 text-left text-center md:text-center"></div>
+        <div className="space-y-4 text-center md:text-center"></div>
 
         {/* Score Card */}
         <Card className="border-2 border-primary/20 p-0 shadow-xl">

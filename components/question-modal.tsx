@@ -64,7 +64,7 @@ export function QuestionModal() {
               <div className="space-y-3">
                 {currentQuestion.options.map((option, index) => (
                   <Button
-                    key={index}
+                    key={option}
                     onClick={() => handleAnswerSelect(index)}
                     variant="outline"
                     className="h-auto w-full justify-start border-2 border-muted-foreground/20 p-3 text-left text-sm hover:border-primary/50 hover:bg-primary/5 sm:p-4 sm:text-base"
@@ -99,7 +99,7 @@ export function QuestionModal() {
                 <div className="space-y-2">
                   {currentQuestion.options.map((option, index) => (
                     <div
-                      key={index}
+                      key={option}
                       className={`rounded-lg border-2 p-3 ${
                         index === currentQuestion.correctAnswer
                           ? "border-green-500 bg-green-100 text-green-800"

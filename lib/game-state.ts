@@ -4,7 +4,8 @@ import { persist } from "zustand/middleware";
 export interface Question {
   value: number;
   question: string;
-  answer: string;
+  options: string[];
+  correctAnswer: number;
   answered?: boolean;
 }
 
@@ -153,13 +154,13 @@ export const useGameStore = create<GameState>()(
             // Convert arrays back to Sets when loading from storage
             if (parsed.state) {
               parsed.state.answeredQuestions = new Set(
-                parsed.state.answeredQuestions || [],
+                Array.isArray(parsed.state.answeredQuestions) ? parsed.state.answeredQuestions : [],
               );
               parsed.state.correctAnswers = new Set(
-                parsed.state.correctAnswers || [],
+                Array.isArray(parsed.state.correctAnswers) ? parsed.state.correctAnswers : [],
               );
               parsed.state.incorrectAnswers = new Set(
-                parsed.state.incorrectAnswers || [],
+                Array.isArray(parsed.state.incorrectAnswers) ? parsed.state.incorrectAnswers : [],
               );
             }
 
@@ -177,13 +178,13 @@ export const useGameStore = create<GameState>()(
               stateToSave.state = {
                 ...stateToSave.state,
                 answeredQuestions: Array.from(
-                  stateToSave.state.answeredQuestions || [],
+                  stateToSave.state.answeredQuestions || new Set(),
                 ),
                 correctAnswers: Array.from(
-                  stateToSave.state.correctAnswers || [],
+                  stateToSave.state.correctAnswers || new Set(),
                 ),
                 incorrectAnswers: Array.from(
-                  stateToSave.state.incorrectAnswers || [],
+                  stateToSave.state.incorrectAnswers || new Set(),
                 ),
               };
             }
