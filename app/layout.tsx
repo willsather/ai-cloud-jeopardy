@@ -13,14 +13,13 @@ export const metadata: Metadata = {
     icon: `/favicon.ico`,
     shortcut: `/favicon.ico`,
     apple: [
-      { url: `/57x57.png`, sizes: '57x57' },
-      { url: `/120x120.png`, sizes: '120x120' },
-      { url: `/180x180.png`, sizes: '180x180' },
+      { url: `/57x57.png`, sizes: "57x57" },
+      { url: `/120x120.png`, sizes: "120x120" },
+      { url: `/180x180.png`, sizes: "180x180" },
     ],
-    other: [
-      { rel: 'mask-icon', url: `/safari-pinned-tab.svg` },
-    ],
-  },};
+    other: [{ rel: "mask-icon", url: `/safari-pinned-tab.svg` }],
+  },
+};
 
 export default function RootLayout({
   children,

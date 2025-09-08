@@ -4,7 +4,12 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogOverlay } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogOverlay,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useGameStore } from "@/lib/game-state";
 
 export function QuestionModal() {
@@ -23,7 +28,7 @@ export function QuestionModal() {
       answerQuestion(isCorrect);
       setSelectedAnswer(null);
       setShowResult(false);
-    }, 2000); // Show result for 2 seconds before closing
+    }, 2000);
   };
 
   const handleClose = () => {
@@ -35,6 +40,9 @@ export function QuestionModal() {
   return (
     <Dialog open={!!currentQuestion} onOpenChange={handleClose}>
       <DialogOverlay className="bg-black/80 backdrop-blur-sm" />
+      <DialogTitle className="text-center font-bold text-xl">
+        Question
+      </DialogTitle>
       <DialogContent className="mx-auto my-4 max-h-[90vh] w-[95vw] max-w-2xl overflow-hidden overflow-y-auto rounded-xl p-0 shadow-2xl sm:my-8 sm:w-full">
         <Card className="overflow-hidden border-0 bg-card p-0">
           <CardHeader className="-m-px relative bg-primary py-4 text-primary-foreground sm:py-6">
